@@ -12,6 +12,6 @@ func main() {
 	fmt.Print("$ ")
 	var x string
 	_,e:= fmt.Scan(&x)
-	if e== nil{ fmt.Println(x,": command not found")
+	if e== nil{ fmt.Print(x,": command not found")
 }else	{fmt.Print(e)}
 }
