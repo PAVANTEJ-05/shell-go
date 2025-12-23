@@ -18,6 +18,9 @@ func main() {
 	if e!= nil{fmt.Print(e) 
 		os.Exit(1)
 	}
+	if x =="exit" { os.Exit(0)
+	}else{
 fmt.Print(x,": command not found\n")
+	}
 }
 }
