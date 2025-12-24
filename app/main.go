@@ -6,6 +6,8 @@ import (
 	"os"
 	"slices"
 	"strings"
+	// "path/filepath"
+	"os/exec"
 )
 
 // Ensures gofmt doesn't remove the "fmt" import in stage 1 (feel free to remove this!)
@@ -31,13 +33,21 @@ func main() {
 		 fmt.Println(arg)
 	case "type":
 		 for _,cmd:= range a  {
+			//for multiple arg in type
 			cmd:=strings.TrimSpace(cmd)
+			// for executables path 
+			path,_:=exec.LookPath(cmd)
+			
+			
 			if slices.Contains(commands,cmd) {
 			  fmt.Println(strings.TrimSpace(cmd),"is a shell builtin")
-
-			}else{
-				fmt.Print(cmd,": not found\n") }
-		 }
+				continue;
+			}else if (path!="") {
+				fmt.Println(cmd,"is",path)
+			 }else{
+				fmt.Println(cmd+": not found")
+			 }
+		}
 	case "exit":
 		 os.Exit(0)
 	default:
