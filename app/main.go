@@ -36,7 +36,7 @@ func main() {
 			  fmt.Println(strings.TrimSpace(cmd),"is a shell builtin")
 
 			}else{
-				fmt.Print(cmd,": command not found\n") }
+				fmt.Print(cmd,": not found\n") }
 		 }
 	case "exit":
 		 os.Exit(0)
