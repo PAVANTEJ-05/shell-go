@@ -4,8 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"log"
-
-	// "io/fs"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -13,25 +11,23 @@ import (
 	"strings"
 )
 
-// Ensures gofmt doesn't remove the "fmt" import in stage 1 (feel free to remove this!)
-var _ = fmt.Print
-
 // path for executables
 func pathOf(cmd string) (string,bool){
-p:= os.Getenv("PATH")
-path:= strings.SplitSeq(p,string(os.PathListSeparator))
+		p:= os.Getenv("PATH")
+		path:= strings.SplitSeq(p,string(os.PathListSeparator))
 
-for dir:= range path{
-		fullpath:= filepath.Join(dir,cmd)
+		for dir:= range path{
 
-	exist,_:=filepath.Match( filepath.Join(dir,"/*"), fullpath)
-	f,err:= os.Stat(fullpath)
-	if err==nil && exist && (f.Mode().Perm()&0111 !=0){
+			fullpath:= filepath.Join(dir,cmd)
+			exist,_:=filepath.Match( filepath.Join(dir,"/*"), fullpath)
 
-		return fullpath,true
-	}
-}
-return "",false
+			f,err:= os.Stat(fullpath)
+
+			if err==nil && exist && (f.Mode().Perm()&0111 !=0){
+				return fullpath,true
+			}
+		}
+		return "",false
 }
 
 func main() {
@@ -49,9 +45,12 @@ func main() {
 		os.Exit(1)
 	}
 	builtin_cmds := []string{"echo","type","exit"} 
+
 	switch in {
+	
 	case "echo":
 		 fmt.Println(echo_arg)
+	
 	case "type":
 		 for _,cmd:= range args  {
 			
@@ -68,8 +67,10 @@ func main() {
 				fmt.Println(cmd+": not found")
 			 }
 		}
+	
 	case "exit":
 		 os.Exit(0)
+	
 	default:
 		_,exist:=pathOf(in)
 		if exist {
@@ -77,15 +78,15 @@ func main() {
 			  var out strings.Builder
 
 				proc.Stdout=&out
-			err:= proc.Run()
+				err:= proc.Run()
 				if err!=nil{ log.Fatal(err)}
-			    fmt.Print(out.String())
-
+			    
+				fmt.Print(out.String())
 
 			}	else{
-fmt.Print(in,": command not found\n")
-		}
+				fmt.Print(in,": command not found\n")
+			}
 	}
-}
+	}
 }
 
