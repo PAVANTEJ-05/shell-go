@@ -3,15 +3,36 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log"
+
+	// "io/fs"
 	"os"
+	"os/exec"
+	"path/filepath"
 	"slices"
 	"strings"
-	// "path/filepath"
-	"os/exec"
 )
 
 // Ensures gofmt doesn't remove the "fmt" import in stage 1 (feel free to remove this!)
 var _ = fmt.Print
+
+// path for executables
+func pathOf(cmd string) (string,bool){
+p:= os.Getenv("PATH")
+path:= strings.SplitSeq(p,string(os.PathListSeparator))
+
+for dir:= range path{
+		fullpath:= filepath.Join(dir,cmd)
+
+	exist,_:=filepath.Match( filepath.Join(dir,"/*"), fullpath)
+	f,err:= os.Stat(fullpath)
+	if err==nil && exist && (f.Mode().Perm()&0111 !=0){
+
+		return fullpath,true
+	}
+}
+return "",false
+}
 
 func main() {
 
@@ -20,26 +41,25 @@ func main() {
 
 	x,e:= bufio.NewReader(os.Stdin).ReadString('\n')
 	in :=strings.TrimSpace(strings.Split(x," ")[0])
-	a:= strings.SplitAfter(x," ")[1:]
-	arg:= strings.Trim(strings.Join(a, "")," \"\n")
+	args :=strings.Fields(x)[1:]
+	echo_arg:= strings.Trim(strings.Join(args, " "),"\"\n")
 	// fmt.Printf("in: %q \n arg: %q\n",in,arg)
 	if e!= nil{
 		fmt.Print(e) 
 		os.Exit(1)
 	}
-	commands := []string{"echo","type","exit"} 
+	builtin_cmds := []string{"echo","type","exit"} 
 	switch in {
 	case "echo":
-		 fmt.Println(arg)
+		 fmt.Println(echo_arg)
 	case "type":
-		 for _,cmd:= range a  {
-			//for multiple arg in type
+		 for _,cmd:= range args  {
+			
 			cmd:=strings.TrimSpace(cmd)
 			// for executables path 
-			path,_:=exec.LookPath(cmd)
+			path,_:=pathOf(cmd)
 			
-			
-			if slices.Contains(commands,cmd) {
+			if slices.Contains(builtin_cmds,cmd) {
 			  fmt.Println(strings.TrimSpace(cmd),"is a shell builtin")
 				continue;
 			}else if (path!="") {
@@ -51,8 +71,21 @@ func main() {
 	case "exit":
 		 os.Exit(0)
 	default:
-fmt.Print(in,": command not found\n")
+		_,exist:=pathOf(in)
+		if exist {
+			  proc:= exec.Command(in,args...)
+			  var out strings.Builder
 
+				proc.Stdout=&out
+			err:= proc.Run()
+				if err!=nil{ log.Fatal(err)}
+			    fmt.Print(out.String())
+
+
+			}	else{
+fmt.Print(in,": command not found\n")
+		}
 	}
 }
 }
+
