@@ -55,7 +55,8 @@ func parsed_args( raw string) string{
 		continue
 	} else if (unicode.IsSpace(c)&& !toggle && count==0){
 		sb.WriteRune(c)
-	}else{
+		count++ ;
+	}else if(!unicode.IsSpace(c)){
 		sb.WriteRune(c)
 		count=0
 	}
