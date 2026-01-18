@@ -67,7 +67,35 @@ func parsed_args( raw string) string{
 		}
 		return sb.String();
 }
-
+func parsed_arg( raw string) []string{
+	var toggle,t2 bool =false,false
+	var slice []string ;
+	var sb strings.Builder
+		count:=0
+		for _,c:= range raw{
+		if(c=='"' && !toggle){
+		t2 = !t2
+		count=0
+		continue;
+	}else	if(c=='\'' && !t2){
+		toggle = !toggle
+		count=0
+		continue;
+	}else	if (toggle || t2){
+		sb.WriteRune(c)
+		continue
+	} else if (unicode.IsSpace(c)&& !toggle && !t2 && count==0){
+		sb.WriteRune(c)
+		slice = append(slice,sb.String())
+		sb.Reset();
+		count++ ;
+	}else if(!unicode.IsSpace(c)){
+		sb.WriteRune(c)
+		count=0
+	}
+		}
+		return slice;
+}
 
 func main() {
 	
@@ -80,7 +108,7 @@ func main() {
 	
 	in :=strings.TrimSpace(strings.Split(x," ")[0])
 	// args :=strings.FieldsFunc(x,quoted_args)[1:]   // UNCOMMENT IF DOWNLINE FAILS
-	args := strings.Fields(parsed_args(raw))
+	args := parsed_arg(raw)
 	
 		
 // fmt.Println(sb.String())           //string bulder output
