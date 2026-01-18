@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"slices"
 	"strings"
+	"unicode"
 )
 
 // path for executables
@@ -29,27 +30,65 @@ func pathOf(cmd string) (string,bool){
 		}
 		return "",false
 }
+var toggle bool =false
+func quoted_args( c rune ) (bool){
+	if(c=='\''){
+		toggle = !toggle
+		return true;
+	}else	if (toggle==true){
+		return false
+	} 
+return unicode.IsSpace(c);
+}
+
+func parsed_args( raw string) string{
+	var sb strings.Builder
+		count:=0
+		for _,c:= range raw{
+			
+	if(c=='\''){
+		toggle = !toggle
+		count=0
+		continue;
+	}else	if (toggle){
+		sb.WriteRune(c)
+		continue
+	} else if (unicode.IsSpace(c)&& !toggle && count==0){
+		sb.WriteRune(c)
+	}else{
+		sb.WriteRune(c)
+		count=0
+	}
+		}
+		return sb.String();
+}
+
 
 func main() {
-
+	
 	for{	
 	fmt.Print("$ ")
 
 	x,e:= bufio.NewReader(os.Stdin).ReadString('\n')
+	// fmt.Printf("%q\n",x)    // raw input 
 	in :=strings.TrimSpace(strings.Split(x," ")[0])
-	args :=strings.Fields(x)[1:]
-	echo_arg:= strings.Trim(strings.Join(args, " "),"\"\n")
-	// fmt.Printf("in: %q \n arg: %q\n",in,arg)
+	args :=strings.FieldsFunc(x,quoted_args)[1:]
+	   
+	raw:=strings.Join(strings.Split(x," ")[1:]," ")
+		
+// fmt.Println(sb.String())           //string bulder output
+	// echo_out:= strings.Trim(strings.Join(args, " "),"\n")
+	// fmt.Printf("in: %q \n arg: %q\n",in,args) // for out of input and arguments
 	if e!= nil{
 		fmt.Print(e) 
 		os.Exit(1)
 	}
-	builtin_cmds := []string{"echo","type","exit"} 
+	builtin_cmds := []string{"echo","type","exit","cd","pwd"} 
 
 	switch in {
 	
 	case "echo":
-		 fmt.Println(echo_arg)
+		 fmt.Println(strings.TrimSuffix(parsed_args(raw),"\n"))
 	
 	case "type":
 		 for _,cmd:= range args  {
@@ -68,6 +107,14 @@ func main() {
 			 }
 		}
 	
+	case "cd":
+		if len(args)==1 {	
+			os.Chdir(args[0])
+		}else if len(args)>1{
+		fmt.Println("Too many arguments")
+	}
+	// case "pwd":
+			
 	case "exit":
 		 os.Exit(0)
 	
