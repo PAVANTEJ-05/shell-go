@@ -30,16 +30,19 @@ func pathOf(cmd string) (string,bool){
 		}
 		return "",false
 }
-// var toggle bool =false
-// func quoted_args( c rune ) (bool){
-// 	if(c=='\''){
-// 		toggle = !toggle
-// 		return true;
-// 	}else	if (toggle==true){
-// 		return false
-// 	} 
-// return unicode.IsSpace(c);
-// }
+var to1,to2 bool =false,false
+func quoted_args( c rune ) (bool){
+	if(c=='"' && !to1){
+		to2=!to2
+		return true;
+	}else if(c=='\''&& !to2){
+		to1 = !to1
+		return true;
+	}else	if (to1||to2){
+		return false
+	} 
+return unicode.IsSpace(c);
+}
 
 func parsed_args( raw string) string{
 	var toggle,t2 bool =false,false
@@ -67,35 +70,7 @@ func parsed_args( raw string) string{
 		}
 		return sb.String();
 }
-func parsed_arg( raw string) []string{
-	var toggle,t2 bool =false,false
-	var slice []string ;
-	var sb strings.Builder
-		count:=0
-		for _,c:= range raw{
-		if(c=='"' && !toggle){
-		t2 = !t2
-		count=0
-		continue;
-	}else	if(c=='\'' && !t2){
-		toggle = !toggle
-		count=0
-		continue;
-	}else	if (toggle || t2){
-		sb.WriteRune(c)
-		continue
-	} else if (unicode.IsSpace(c)&& !toggle && !t2 && count==0){
-		sb.WriteRune(c)
-		slice = append(slice,sb.String())
-		sb.Reset();
-		count++ ;
-	}else if(!unicode.IsSpace(c)){
-		sb.WriteRune(c)
-		count=0
-	}
-		}
-		return slice;
-}
+
 
 func main() {
 	
@@ -107,8 +82,8 @@ func main() {
 	raw:=strings.Join(strings.Split(x," ")[1:]," ")
 	
 	in :=strings.TrimSpace(strings.Split(x," ")[0])
-	// args :=strings.FieldsFunc(x,quoted_args)[1:]   // UNCOMMENT IF DOWNLINE FAILS
-	args := parsed_arg(raw)
+	args :=strings.FieldsFunc(x,quoted_args)[1:]   // UNCOMMENT IF DOWNLINE FAILS
+	// args := strings.Fields(parsed_args(raw))
 	
 		
 // fmt.Println(sb.String())           //string bulder output
