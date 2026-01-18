@@ -44,7 +44,7 @@ func quoted_args( c rune ) (bool){
 return unicode.IsSpace(c);
 }
 
-func parsed_args( raw string) string{
+func parsed_echo_args( raw string) string{
 	var toggle,t2 bool =false,false
 	var sb strings.Builder
 		count:=0
@@ -98,7 +98,7 @@ func main() {
 	switch in {
 	
 	case "echo":
-		 fmt.Println(strings.TrimSuffix(parsed_args(raw),"\n"))
+		 fmt.Println(parsed_echo_args(raw))
 	
 	case "type":
 		 for _,cmd:= range args  {
