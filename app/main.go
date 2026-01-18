@@ -98,7 +98,7 @@ func main() {
 	switch in {
 	
 	case "echo":
-		 fmt.Println(parsed_echo_args(raw))
+		 fmt.Println(strings.TrimSuffix(parsed_echo_args(raw),"\n"))
 	
 	case "type":
 		 for _,cmd:= range args  {
