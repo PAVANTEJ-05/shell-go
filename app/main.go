@@ -30,9 +30,15 @@ func pathOf(cmd string) (string,bool){
 		}
 		return "",false
 }
-var to1,to2 bool =false,false
+var to,to1,to2 bool =false,false,false
 func quoted_args( c rune ) (bool){
-	if(c=='"' && !to1){
+	if to {
+		to=!to
+		return false
+	}else if c=='\\' && !to1 {
+		to=!to 
+		return true;
+	}else if(c=='"' && !to1){
 		to2=!to2
 		return true;
 	}else if(c=='\''&& !to2){
@@ -69,7 +75,7 @@ func parsed_echo_args( raw string) string{
 		count=0
 		continue;
 
-	}else	if (t1 || (t2 && !toggle )){
+	}else	if (t1 || t2){
 	// 	if (c=='\\'){
 	// 	toggle =!toggle
 	// 	continue
