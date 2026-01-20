@@ -44,7 +44,7 @@ func quoted_args( c rune ) (bool){
 	}else if(c=='\''&& !to2){
 		to1 = !to1
 		return true;
-	}else	if (to1||to2){
+	}else	if (to1||(to2 && !to)){
 		return false
 	} 
 return unicode.IsSpace(c);
