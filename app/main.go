@@ -55,7 +55,7 @@ func parsed_echo_args( raw string) string{
 		toggle=!toggle
 		continue;
 
-	}else if (c=='\\'){
+	}else if (c=='\\'&& !t1 && !t2){
 		toggle =!toggle
 		continue
 
