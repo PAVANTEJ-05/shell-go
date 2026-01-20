@@ -44,7 +44,7 @@ func quoted_args( c rune ) (bool){
 	}else if(c=='\''&& !to2){
 		to1 = !to1
 		return true;
-	}else	if (to1||(to2 && !to)){
+	}else	if (to1||to2){
 		return false
 	} 
 return unicode.IsSpace(c);
@@ -53,7 +53,7 @@ return unicode.IsSpace(c);
 func parsed_echo_args( raw string) string{
 	var t1,t2,toggle bool =false,false,false
 	var sb strings.Builder
-		count:=0
+	count:=0
 		for _,c:= range raw{
 			
 	if toggle {
@@ -106,8 +106,8 @@ func main() {
 	raw:=strings.Join(strings.Split(x," ")[1:]," ")
 	
 	in :=strings.TrimSpace(strings.Split(x," ")[0])
-	args :=strings.FieldsFunc(x,quoted_args)[1:]   // UNCOMMENT IF DOWNLINE FAILS
-	// args := strings.Fields(parsed_args(raw))
+	// args :=strings.FieldsFunc(x,quoted_args)[1:]   // UNCOMMENT IF DOWNLINE FAILS
+	args := strings.TrimSuffix(parsed_echo_args(raw),"\n")
 	
 		
 // fmt.Println(sb.String())           //string bulder output
