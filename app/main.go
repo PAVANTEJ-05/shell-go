@@ -45,22 +45,40 @@ return unicode.IsSpace(c);
 }
 
 func parsed_echo_args( raw string) string{
-	var toggle,t2 bool =false,false
+	var t1,t2,toggle bool =false,false,false
 	var sb strings.Builder
 		count:=0
 		for _,c:= range raw{
-		if(c=='"' && !toggle){
+			
+	if toggle {
+		sb.WriteRune(c)
+		toggle=!toggle
+		continue;
+
+	}else if (c=='\\'){
+		toggle =!toggle
+		continue
+
+	}else if(c=='"' && !t1){
 		t2 = !t2
 		count=0
 		continue;
+
 	}else	if(c=='\'' && !t2){
-		toggle = !toggle
+		t1 = !t1
 		count=0
 		continue;
-	}else	if (toggle || t2){
+
+	}else	if (t1 || t2){
+	// 	if (c=='\\'){
+	// 	toggle =!toggle
+	// 	continue
+
+	// }
 		sb.WriteRune(c)
 		continue
-	} else if (unicode.IsSpace(c)&& !toggle && !t2 && count==0){
+
+	} else if (unicode.IsSpace(c)&& !t1 && !t2 && count==0){
 		sb.WriteRune(c)
 		count++ ;
 	}else if(!unicode.IsSpace(c)){
