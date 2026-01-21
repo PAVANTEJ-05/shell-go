@@ -171,15 +171,14 @@ func main() {
 				proc.Stderr=&stderr
 				proc.Stdout=&out
 				err:= proc.Run()
-				if err!=nil { 
-					if rd_err {
-					os.WriteFile(rd_arg,[]byte(stderr.String()),0666)
-					rd_err=false
-					continue;
-					}else{
-					fmt.Print(strings.TrimSuffix(stderr.String(),"\n"))
+
+				if rd_err {
+				os.WriteFile(rd_arg,[]byte(stderr.String()),0666)
+				rd_err=false
+				continue;
 				}
-			
+				if err!=nil { 
+					fmt.Print(strings.TrimSuffix(stderr.String(),"\n"))
 				}
 			    if redirect {
 					os.WriteFile(rd_arg,[]byte(out.String()),0666)
