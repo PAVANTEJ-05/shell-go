@@ -109,7 +109,7 @@ func main() {
 		var redirect,rd_err bool;
 
 		for i,r := range args{
-		if r==">"||r=="1>" {
+		if r==">"||r=="1>"||r=="2>" {
 			rd_arg =args[i+1]
 			args = args[:i]
 			// fmt.Println(args)
@@ -174,9 +174,11 @@ func main() {
 					os.WriteFile(rd_arg,[]byte(stderr.String()),0666)
 					rd_err=false
 					redirect=false
+						continue;
 					}else{
 					fmt.Print(strings.TrimSuffix(stderr.String(),"\n"))
 				}
+			
 				}
 			    if redirect {
 					os.WriteFile(rd_arg,[]byte(out.String()),0666)
