@@ -166,16 +166,17 @@ func main() {
 				proc.Stdout=&out
 				err:= proc.Run()
 				if err!=nil{ 
-					fmt.Print(stderr.String())
+					fmt.Print(strings.TrimSuffix(stderr.String(),"\n"))
 				}
 			    if redirect {
 					os.WriteFile(rd_arg,[]byte(out.String()),0666)
 					redirect=false
 				}else{
-				fmt.Print(out.String())}
+				fmt.Println(strings.TrimSuffix(out.String(),"\n"))
+				}
 
 			}	else{
-				fmt.Print(in,": command not found\n")
+				fmt.Println(in,": command not found")
 			}
 	}
 	}
