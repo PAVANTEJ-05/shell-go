@@ -175,6 +175,7 @@ func main() {
 					if rd_err {
 					os.WriteFile(rd_arg,[]byte(stderr.String()),0666)
 					rd_err=false
+					redirect=false
 					}else{
 					fmt.Println(strings.TrimSuffix(stderr.String(),"\n"))
 				}
@@ -192,4 +193,3 @@ func main() {
 	}
 	}
 }
-
