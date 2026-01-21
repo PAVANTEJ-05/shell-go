@@ -30,25 +30,6 @@ func pathOf(cmd string) (string,bool){
 		}
 		return "",false
 }
-// var to,to1,to2 bool =false,false,false
-// func quoted_args( c rune ) (bool){
-// 	if to {
-// 		to=!to
-// 		return true
-// 	}else if c=='\\' && !to1 {
-// 		to=!to 
-// 		return false;
-// 	}else if(c=='"' && !to1){
-// 		to2=!to2
-// 		return true;
-// 	}else if(c=='\''&& !to2){
-// 		to1 = !to1
-// 		return true;
-// 	}else	if (to1||to2){
-// 		return false
-// 	} 
-// return unicode.IsSpace(c);
-// }
 
 func parsed_args( raw string) []string{
 	var t1,t2,toggle bool =false,false,false
@@ -106,17 +87,10 @@ func main() {
 	x,e:= bufio.NewReader(os.Stdin).ReadString('\n')
 	// fmt.Printf("%q\n",x)    // raw input 
 
-	// raw:=strings.Join(strings.Split(x," ")[1:]," ")
-
-	// in :=strings.TrimSpace(strings.Split(x," ")[0])
 	in:= parsed_args(x)[0]
-	// args :=strings.FieldsFunc(x,quoted_args)[1:]   // UNCOMMENT IF DOWNLINE FAILS
 	args := parsed_args(x)[1:]
 	// fmt.Println(args)
-	
-		
-// fmt.Println(sb.String())           //string bulder output
-	// echo_out:= strings.Trim(strings.Join(args, " "),"\n")
+
 	// fmt.Printf("in: %q \n arg: %q\n",in,args) // for out of input and arguments
 	if e!= nil{
 		fmt.Print(e) 
@@ -127,8 +101,7 @@ func main() {
 	switch in {
 	
 	case "echo":
-		//  fmt.Println(strings.TrimSuffix(parsed_echo_args(raw),"\n"))
-		// echo_args := parsed_args(raw)
+
 		fmt.Println(strings.Join(args," "))
 	case "type":
 		 for _,cmd:= range args  {
