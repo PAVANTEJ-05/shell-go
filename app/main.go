@@ -43,15 +43,16 @@ func parsed_args( raw string) []string{
 			break;
 	}else if toggle {
 
-		sb.WriteRune(c)
-		toggle=!toggle
-
+		
 		if(c=='\'' && t2){
 		t1 = !t1
 		count=0
 		continue;
 
 	}
+		sb.WriteRune(c)
+		toggle=!toggle
+
 		continue;
 
 	}else if (c=='\\'&& !t1 ){
