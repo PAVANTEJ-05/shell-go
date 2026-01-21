@@ -176,7 +176,7 @@ func main() {
 				}
 
 			}	else{
-				fmt.Println(in,": command not found")
+				fmt.Println(in+": command not found")
 			}
 	}
 	}
