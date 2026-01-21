@@ -128,6 +128,11 @@ func main() {
 	switch in {
 	
 	case "echo":
+			if rd_err {
+				os.WriteFile(rd_arg,[]byte(""),0666)
+				rd_err=false
+				continue;
+			}
 		if redirect {
 			os.WriteFile(rd_arg,[]byte(strings.Join(args," ")),0666)
 			redirect=false
