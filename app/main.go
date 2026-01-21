@@ -42,7 +42,8 @@ func parsed_args( raw string) []string{
 			argv = append(argv, sb.String())
 			break;
 	}else if toggle {
-				toggle=!toggle
+		
+		toggle=!toggle
 
 		if t2 && !(c=='"'||c=='\\'||c=='$'||c=='\n'||c=='`'){
 			sb.WriteRune('\\')	
@@ -104,17 +105,31 @@ func main() {
 		fmt.Print(e) 
 		os.Exit(1)
 	}
+		var rd_arg string ;
+		var redirect bool;
+
+		for i,r := range args{
+		if r==">"||r=="1>" {
+			rd_arg =args[i+1]
+			args = args[:i]
+			// fmt.Println(args)
+			redirect=true
+			
+		}
+	}
 	builtin_cmds := []string{"echo","type","exit","cd","pwd"} 
 
 	switch in {
 	
 	case "echo":
-
+		if redirect {
+			os.WriteFile(rd_arg,[]byte(strings.Join(args," ")),0666)
+			redirect=false
+		}
 		fmt.Println(strings.Join(args," "))
 	case "type":
 		 for _,cmd:= range args  {
 			
-			cmd:=strings.TrimSpace(cmd)
 			// for executables path 
 			path,_:=pathOf(cmd)
 			
@@ -142,14 +157,21 @@ func main() {
 	default:
 		_,exist:=pathOf(in)
 		if exist {
+
+
 			  proc:= exec.Command(in,args...)
 			  var out strings.Builder
 
 				proc.Stdout=&out
 				err:= proc.Run()
-				if err!=nil{ log.Fatal(err)}
-			    
-				fmt.Print(out.String())
+				if err!=nil{ 
+					log.Fatal(err)
+				}
+			    if redirect {
+					os.WriteFile(rd_arg,[]byte(out.String()),0666)
+					redirect=false
+				}else{
+				fmt.Print(out.String())}
 
 			}	else{
 				fmt.Print(in,": command not found\n")
