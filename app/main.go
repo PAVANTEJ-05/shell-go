@@ -46,7 +46,7 @@ func parsed_args( raw string) []string{
 		toggle=!toggle
 		continue;
 
-	}else if (c=='\\'&& !t1 ){
+	}else if (c=='\\' ){
 		toggle =!toggle
 		continue
 
