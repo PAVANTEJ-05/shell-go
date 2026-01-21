@@ -84,7 +84,7 @@ func parsed_args( raw string) []string{
 		continue
 
 	} else if (unicode.IsSpace(c)&& !t1 && !t2 && count==0){
-		sb.WriteRune(c)
+		// sb.WriteRune(c)
 		argv = append(argv,sb.String())
 		sb.Reset();
 		count++ ;	
@@ -109,7 +109,7 @@ func main() {
 	// raw:=strings.Join(strings.Split(x," ")[1:]," ")
 
 	// in :=strings.TrimSpace(strings.Split(x," ")[0])
-	in:= strings.TrimSpace(parsed_args(x)[0])
+	in:= parsed_args(x)[0]
 	// args :=strings.FieldsFunc(x,quoted_args)[1:]   // UNCOMMENT IF DOWNLINE FAILS
 	args := parsed_args(x)[1:]
 	// fmt.Println(args)
@@ -129,7 +129,7 @@ func main() {
 	case "echo":
 		//  fmt.Println(strings.TrimSuffix(parsed_echo_args(raw),"\n"))
 		// echo_args := parsed_args(raw)
-		fmt.Println(strings.Join(args,""))
+		fmt.Println(strings.Join(args," "))
 	case "type":
 		 for _,cmd:= range args  {
 			
