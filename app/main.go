@@ -30,33 +30,37 @@ func pathOf(cmd string) (string,bool){
 		}
 		return "",false
 }
-var to,to1,to2 bool =false,false,false
-func quoted_args( c rune ) (bool){
-	if to {
-		to=!to
-		return false
-	}else if c=='\\' && !to1 {
-		to=!to 
-		return true;
-	}else if(c=='"' && !to1){
-		to2=!to2
-		return true;
-	}else if(c=='\''&& !to2){
-		to1 = !to1
-		return true;
-	}else	if (to1||to2){
-		return false
-	} 
-return unicode.IsSpace(c);
-}
+// var to,to1,to2 bool =false,false,false
+// func quoted_args( c rune ) (bool){
+// 	if to {
+// 		to=!to
+// 		return true
+// 	}else if c=='\\' && !to1 {
+// 		to=!to 
+// 		return false;
+// 	}else if(c=='"' && !to1){
+// 		to2=!to2
+// 		return true;
+// 	}else if(c=='\''&& !to2){
+// 		to1 = !to1
+// 		return true;
+// 	}else	if (to1||to2){
+// 		return false
+// 	} 
+// return unicode.IsSpace(c);
+// }
 
-func parsed_echo_args( raw string) string{
+func parsed_args( raw string) []string{
 	var t1,t2,toggle bool =false,false,false
 	var sb strings.Builder
+	var argv []string;
 	count:=0
-		for _,c:= range raw{
-			
-	if toggle {
+		for i,c:= range raw{
+	
+	if i==len(raw)-1 {
+			argv = append(argv, sb.String())
+			break;
+	}else if toggle {
 		sb.WriteRune(c)
 		toggle=!toggle
 		continue;
@@ -76,23 +80,21 @@ func parsed_echo_args( raw string) string{
 		continue;
 
 	}else	if (t1 || t2){
-	// 	if (c=='\\'){
-	// 	toggle =!toggle
-	// 	continue
-
-	// }
 		sb.WriteRune(c)
 		continue
 
 	} else if (unicode.IsSpace(c)&& !t1 && !t2 && count==0){
 		sb.WriteRune(c)
-		count++ ;
+		argv = append(argv,sb.String())
+		sb.Reset();
+		count++ ;	
+		continue;
 	}else if(!unicode.IsSpace(c)){
 		sb.WriteRune(c)
 		count=0
 	}
 		}
-		return sb.String();
+		return argv;
 }
 
 
@@ -103,11 +105,14 @@ func main() {
 
 	x,e:= bufio.NewReader(os.Stdin).ReadString('\n')
 	// fmt.Printf("%q\n",x)    // raw input 
-	raw:=strings.Join(strings.Split(x," ")[1:]," ")
-	
-	in :=strings.TrimSpace(strings.Split(x," ")[0])
+
+	// raw:=strings.Join(strings.Split(x," ")[1:]," ")
+
+	// in :=strings.TrimSpace(strings.Split(x," ")[0])
+	in:= strings.TrimSpace(parsed_args(x)[0])
 	// args :=strings.FieldsFunc(x,quoted_args)[1:]   // UNCOMMENT IF DOWNLINE FAILS
-	args := strings.TrimSuffix(parsed_echo_args(raw),"\n")
+	args := parsed_args(x)[1:]
+	// fmt.Println(args)
 	
 		
 // fmt.Println(sb.String())           //string bulder output
@@ -122,8 +127,9 @@ func main() {
 	switch in {
 	
 	case "echo":
-		 fmt.Println(strings.TrimSuffix(parsed_echo_args(raw),"\n"))
-	
+		//  fmt.Println(strings.TrimSuffix(parsed_echo_args(raw),"\n"))
+		// echo_args := parsed_args(raw)
+		fmt.Println(strings.Join(args,""))
 	case "type":
 		 for _,cmd:= range args  {
 			
