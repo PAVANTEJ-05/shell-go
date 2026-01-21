@@ -182,6 +182,9 @@ func main() {
 				if rd_err {
 				os.WriteFile(rd_arg,[]byte(stderr.String()),0666)
 				rd_err=false
+				if out.String()!=""{
+					fmt.Println(strings.TrimSuffix(out.String(),"\n"))
+				}
 				continue;
 				}
 				if err!=nil { 
