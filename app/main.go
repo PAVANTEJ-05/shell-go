@@ -166,7 +166,7 @@ func main() {
 				proc.Stdout=&out
 				err:= proc.Run()
 				if err!=nil{ 
-					fmt.Print(strings.TrimSuffix(stderr.String(),"\n"))
+					fmt.Println(strings.TrimSuffix(stderr.String(),"\n"))
 				}
 			    if redirect {
 					os.WriteFile(rd_arg,[]byte(out.String()),0666)
