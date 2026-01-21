@@ -113,15 +113,13 @@ func main() {
 			rd_arg =args[i+1]
 			args = args[:i]
 			// fmt.Println(args)
+			if r=="2>"{
+			rd_err=true
+			}
 			redirect=true
 			
 		}
-		if r=="2>"{
-			rd_arg =args[i+1]
-			args = args[:i]
-			redirect=true
-			rd_err=true
-		}
+		
 	}
 	builtin_cmds := []string{"echo","type","exit","cd","pwd"} 
 
@@ -177,7 +175,7 @@ func main() {
 					rd_err=false
 					redirect=false
 					}else{
-					fmt.Println(strings.TrimSuffix(stderr.String(),"\n"))
+					fmt.Print(strings.TrimSuffix(stderr.String(),"\n"))
 				}
 				}
 			    if redirect {
