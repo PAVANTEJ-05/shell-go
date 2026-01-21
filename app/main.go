@@ -3,7 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"log"
+	// "log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -125,8 +125,8 @@ func main() {
 		if redirect {
 			os.WriteFile(rd_arg,[]byte(strings.Join(args," ")),0666)
 			redirect=false
-		}
-		fmt.Println(strings.Join(args," "))
+		}else{
+		fmt.Println(strings.Join(args," "))}
 	case "type":
 		 for _,cmd:= range args  {
 			
@@ -161,11 +161,12 @@ func main() {
 
 			  proc:= exec.Command(in,args...)
 			  var out strings.Builder
-
+			  var stderr strings.Builder
+				proc.Stderr=&stderr
 				proc.Stdout=&out
 				err:= proc.Run()
 				if err!=nil{ 
-					log.Fatal(err)
+					fmt.Print(stderr.String())
 				}
 			    if redirect {
 					os.WriteFile(rd_arg,[]byte(out.String()),0666)
