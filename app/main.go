@@ -106,7 +106,7 @@ func main() {
 		os.Exit(1)
 	}
 		var rd_arg string ;
-		var redirect bool;
+		var redirect,rd_err bool;
 
 		for i,r := range args{
 		if r==">"||r=="1>" {
@@ -115,6 +115,12 @@ func main() {
 			// fmt.Println(args)
 			redirect=true
 			
+		}
+		if r=="2>"{
+			rd_arg =args[i+1]
+			args = args[:i]
+			redirect=true
+			rd_err=true
 		}
 	}
 	builtin_cmds := []string{"echo","type","exit","cd","pwd"} 
@@ -165,8 +171,13 @@ func main() {
 				proc.Stderr=&stderr
 				proc.Stdout=&out
 				err:= proc.Run()
-				if err!=nil{ 
+				if err!=nil { 
+					if rd_err {
+					os.WriteFile(rd_arg,[]byte(stderr.String()),0666)
+					rd_err=false
+					}else{
 					fmt.Println(strings.TrimSuffix(stderr.String(),"\n"))
+				}
 				}
 			    if redirect {
 					os.WriteFile(rd_arg,[]byte(out.String()),0666)
