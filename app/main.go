@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"slices"
 	"strings"
-	"unicode"
+	// "unicode"
 )
 
 // path for executables
@@ -31,61 +31,6 @@ func pathOf(cmd string) (string,bool){
 		return "",false
 }
 
-func parsed_args( raw string) []string{
-	var t1,t2,toggle bool =false,false,false
-	var sb strings.Builder
-	var argv []string;
-	count:=0
-		for i,c:= range raw{
-	
-	if i==len(raw)-1 {
-			argv = append(argv, sb.String())
-			break;
-	}else if toggle {
-		
-		toggle=!toggle
-
-		if t2 && !(c=='"'||c=='\\'||c=='$'||c=='\n'||c=='`'){
-			sb.WriteRune('\\')	
-			sb.WriteRune(c)
-
-			continue
-		}
-		sb.WriteRune(c)
-		continue;
-	
-
-	}else if (c=='\\'&& !t1 ){
-		toggle =!toggle
-		continue
-
-	}else if(c=='"' && !t1){
-		t2 = !t2
-		count=0
-		continue;
-
-	}else	if(c=='\'' && !t2){
-		t1 = !t1
-		count=0
-		continue;
-
-	}else	if (t1 || t2){
-		sb.WriteRune(c)
-		continue
-
-	} else if (unicode.IsSpace(c)&& !t1 && !t2 && count==0){
-		// sb.WriteRune(c)
-		argv = append(argv,sb.String())
-		sb.Reset();
-		count++ ;	
-		continue;
-	}else if(!unicode.IsSpace(c)){
-		sb.WriteRune(c)
-		count=0
-	}
-		}
-		return argv;
-}
 
 
 func main() {
@@ -109,7 +54,7 @@ func main() {
 		var redirect,rd_err bool;
 
 		for i,r := range args{
-		if r==">"||r=="1>"||r=="2>" {
+		if r==">"||r=="1>"||r=="2>"||r=="1>>"||r==">>" {
 			rd_arg =args[i+1]
 			args = args[:i]
 			// fmt.Println(args)
@@ -118,7 +63,9 @@ func main() {
 			rd_err=true
 			redirect=false
 			}
-			
+			// if r=="1>>"||r==">>" {
+			// 	append=true
+			// }
 			
 		}
 		
@@ -171,30 +118,29 @@ func main() {
 		_,exist:=pathOf(in)
 		if exist {
 
-
 			  proc:= exec.Command(in,args...)
 			  var out strings.Builder
 			  var stderr strings.Builder
 				proc.Stderr=&stderr
 				proc.Stdout=&out
 				err:= proc.Run()
-
+			
 				if rd_err {
 				os.WriteFile(rd_arg,[]byte(stderr.String()),0666)
 				rd_err=false
 				if out.String()!=""{
-					fmt.Println(strings.TrimSuffix(out.String(),"\n"))
+					fmt.Print(out.String())
 				}
 				continue;
 				}
 				if err!=nil { 
-					fmt.Println(strings.TrimSuffix(stderr.String(),"\n"))
+					fmt.Print(stderr.String())
 				}
 			    if redirect {
 					os.WriteFile(rd_arg,[]byte(out.String()),0666)
 					redirect=false
 				}else{
-				fmt.Println(strings.TrimSuffix(out.String(),"\n"))
+				fmt.Print(out.String())
 				}
 
 			}	else{
@@ -203,3 +149,4 @@ func main() {
 	}
 	}
 }
+// 	TODO: MAKE REDIRECTION IN PARSE FUNCTION
