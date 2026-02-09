@@ -75,9 +75,9 @@ func main() {
 	switch in {
 	
 	case "echo":
-
-		if redirect {
 			output :=strings.Join(args," ")+"\n"
+		if redirect {
+
 				if append_cmd {
 					content,_:=os.ReadFile(rd_arg)
 					output = string(content)+output
@@ -86,7 +86,7 @@ func main() {
 			os.WriteFile(rd_arg,[]byte(output),0666)
 			redirect=false
 		}else{
-		fmt.Println(strings.Join(args," "))
+		fmt.Print(output)
 			}
 		if rd_err {
 				os.WriteFile(rd_arg,[]byte(""),0666)
