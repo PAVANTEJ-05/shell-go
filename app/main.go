@@ -79,11 +79,8 @@ func main() {
 		if redirect {
 			output :=strings.Join(args," ") 
 				if append_cmd {
-					content,e:=os.ReadFile(rd_arg)
+					content,_:=os.ReadFile(rd_arg)
 					output = string(content)+output+"\n"
-						if e!=nil{
-						fmt.Print(e)
-						}
 					append_cmd = false
 				}
 			os.WriteFile(rd_arg,[]byte(output),0666)
@@ -150,9 +147,6 @@ func main() {
 					if append_cmd {
 						content,_:=os.ReadFile(rd_arg)
 						output =string(content)+ output
-							// if e!=nil{
-							// fmt.Print(e)
-							// }
 						append_cmd = false
 					}
 					os.WriteFile(rd_arg,[]byte(output),0666)
