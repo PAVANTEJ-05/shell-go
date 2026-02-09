@@ -143,17 +143,16 @@ func main() {
 					continue;
 				}
 				if err!=nil { 
-					// fmt.Print(stderr.String())
-					continue; // change this
+					fmt.Print(stderr.String())
 				}
 			    if redirect {
 					output := out.String()
 					if append_cmd {
 						content,e:=os.ReadFile(rd_arg)
 						output =string(content)+ output
-							if e!=nil{
-							fmt.Print(e)
-							}
+							// if e!=nil{
+							// fmt.Print(e)
+							// }
 						append_cmd = false
 					}
 					os.WriteFile(rd_arg,[]byte(output),0666)
