@@ -80,7 +80,7 @@ func main() {
 			output :=strings.Join(args," ") 
 				if append_cmd {
 					content,e:=os.ReadFile(rd_arg)
-					output = strings.Join([]string{ string(content), output}, "")
+					output = string(content)+output+"\n"
 						if e!=nil{
 						fmt.Print(e)
 						}
@@ -149,7 +149,7 @@ func main() {
 					output := out.String()
 					if append_cmd {
 						content,e:=os.ReadFile(rd_arg)
-						output = strings.Join([]string{ string(content), output,""}, "\n")
+						output =string(content)+ output
 							if e!=nil{
 							fmt.Print(e)
 							}
