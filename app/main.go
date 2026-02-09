@@ -77,7 +77,7 @@ func main() {
 	case "echo":
 
 		if redirect {
-			output :=strings.Join(args," ") 
+			output :=strings.Join(args," ")+"\n"
 				if append_cmd {
 					content,_:=os.ReadFile(rd_arg)
 					output = string(content)+output+"\n"
