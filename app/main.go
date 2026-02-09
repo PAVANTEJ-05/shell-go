@@ -54,12 +54,15 @@ func main() {
 		var redirect, append_cmd, rd_err  bool
 
 		for i,r := range args{
-		if r==">"||r=="1>"||r=="2>"||r=="1>>"||r==">>" {
+		if r==">"||r=="1>"||r=="2>"||r=="1>>"||r==">>"||r=="2>>" {
 			rd_arg =args[i+1]
 			args = args[:i]  // to make run only the part of commnad, before the special redirect symbols
 			// fmt.Println(args)
 			redirect=true
-			if r=="2>"{
+			if r=="2>"||r=="2>>"{
+				if r == "2>>"{
+					append_cmd =true
+				}
 			rd_err=true
 			redirect=false
 			}
@@ -74,25 +77,25 @@ func main() {
 
 	switch in {
 	
-	case "echo":
-			output :=strings.Join(args," ")+"\n"
-		if redirect {
+	// case "echo":
+	// 		output :=strings.Join(args," ")+"\n"
+	// 	if redirect {
 
-				if append_cmd {
-					content,_:=os.ReadFile(rd_arg)
-					output = string(content)+output
-					append_cmd = false
-				}
-			os.WriteFile(rd_arg,[]byte(output),0666)
-			redirect=false
-		}else{
-		fmt.Print(output)
-			}
-		if rd_err {
-				os.WriteFile(rd_arg,[]byte(""),0666)
-				rd_err=false
-				continue;
-			}
+	// 			if append_cmd {
+	// 				content,_:=os.ReadFile(rd_arg)
+	// 				output = string(content)+output
+	// 				append_cmd = false
+	// 			}
+	// 		os.WriteFile(rd_arg,[]byte(output),0666)
+	// 		redirect=false
+	// 	}else{
+	// 	fmt.Print(output)
+	// 		}
+	// 	if rd_err {
+	// 			os.WriteFile(rd_arg,[]byte(""),0666)
+	// 			rd_err=false
+	// 			continue;
+	// 		}
 	case "type":
 		 for _,cmd:= range args  {
 			
@@ -132,12 +135,18 @@ func main() {
 				err:= proc.Run()
 			
 				if rd_err {
-				os.WriteFile(rd_arg,[]byte(stderr.String()),0666)
-				rd_err=false
-					if out.String()!=""{
-						fmt.Print(out.String())
-					}
-					continue;
+					Error := stderr.String()
+						if append_cmd {
+							content,_:=os.ReadFile(rd_arg)
+							Error =string(content)+ Error
+							append_cmd = false
+						}
+					os.WriteFile(rd_arg,[]byte(Error),0666)
+					rd_err=false
+						if out.String()!=""{
+							fmt.Print(out.String())
+						}
+						continue;
 				}
 				if err!=nil { 
 					fmt.Print(stderr.String())
