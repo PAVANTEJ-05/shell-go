@@ -51,21 +51,21 @@ func main() {
 		os.Exit(1)
 	}
 		var rd_arg string ;
-		var redirect,rd_err bool;
+		var redirect, append_cmd, rd_err  bool
 
 		for i,r := range args{
 		if r==">"||r=="1>"||r=="2>"||r=="1>>"||r==">>" {
 			rd_arg =args[i+1]
-			args = args[:i]
+			args = args[:i]  // to make run only the part of commnad, before the special redirect symbols
 			// fmt.Println(args)
 			redirect=true
 			if r=="2>"{
 			rd_err=true
 			redirect=false
 			}
-			// if r=="1>>"||r==">>" {
-			// 	append=true
-			// }
+			if r=="1>>"||r==">>" {
+				append_cmd =true
+			}
 			
 		}
 		
@@ -77,7 +77,16 @@ func main() {
 	case "echo":
 
 		if redirect {
-			os.WriteFile(rd_arg,[]byte(strings.Join(args," ")),0666)
+			output :=strings.Join(args," ") 
+				if append_cmd {
+					content,e:=os.ReadFile(rd_arg)
+					output = strings.Join([]string{ string(content), output}, "")
+						if e!=nil{
+						fmt.Print(e)
+						}
+					append_cmd = false
+				}
+			os.WriteFile(rd_arg,[]byte(output),0666)
 			redirect=false
 		}else{
 		fmt.Println(strings.Join(args," "))
@@ -128,16 +137,25 @@ func main() {
 				if rd_err {
 				os.WriteFile(rd_arg,[]byte(stderr.String()),0666)
 				rd_err=false
-				if out.String()!=""{
-					fmt.Print(out.String())
-				}
-				continue;
+					if out.String()!=""{
+						fmt.Print(out.String())
+					}
+					continue;
 				}
 				if err!=nil { 
 					fmt.Print(stderr.String())
 				}
 			    if redirect {
-					os.WriteFile(rd_arg,[]byte(out.String()),0666)
+					output := out.String()
+					if append_cmd {
+						content,e:=os.ReadFile(rd_arg)
+						output = strings.Join([]string{ string(content), output,""}, "\n")
+							if e!=nil{
+							fmt.Print(e)
+							}
+						append_cmd = false
+					}
+					os.WriteFile(rd_arg,[]byte(output),0666)
 					redirect=false
 				}else{
 				fmt.Print(out.String())
