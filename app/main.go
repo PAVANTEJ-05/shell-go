@@ -76,26 +76,9 @@ func main() {
 	builtin_cmds := []string{"echo","type","exit","cd","pwd"} 
 
 	switch in {
-	
-	// case "echo":
-	// 		output :=strings.Join(args," ")+"\n"
-	// 	if redirect {
+	// ============ echo AND pwd COMMANDS CAN BE RUNNED BY LOCAL usr/bin OR /bin . SO NO NEED TO IMPLEMENT FROM SCRATCH .BUT IDK AND IMPLEMENTED IT, LATER REALIZED :(
+	// case "echo":	output :=strings.Join(args," ")+"\n"
 
-	// 			if append_cmd {
-	// 				content,_:=os.ReadFile(rd_arg)
-	// 				output = string(content)+output
-	// 				append_cmd = false
-	// 			}
-	// 		os.WriteFile(rd_arg,[]byte(output),0666)
-	// 		redirect=false
-	// 	}else{
-	// 	fmt.Print(output)
-	// 		}
-	// 	if rd_err {
-	// 			os.WriteFile(rd_arg,[]byte(""),0666)
-	// 			rd_err=false
-	// 			continue;
-	// 		}
 	case "type":
 		 for _,cmd:= range args  {
 			
@@ -118,7 +101,6 @@ func main() {
 		}else if len(args)>1{
 		fmt.Println("Too many arguments")
 	}
-	// case "pwd":
 			
 	case "exit":
 		 os.Exit(0)
