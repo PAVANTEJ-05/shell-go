@@ -148,7 +148,7 @@ func main() {
 			    if redirect {
 					output := out.String()
 					if append_cmd {
-						content,e:=os.ReadFile(rd_arg)
+						content,_:=os.ReadFile(rd_arg)
 						output =string(content)+ output
 							// if e!=nil{
 							// fmt.Print(e)
