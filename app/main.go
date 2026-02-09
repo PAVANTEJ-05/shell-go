@@ -143,7 +143,8 @@ func main() {
 					continue;
 				}
 				if err!=nil { 
-					fmt.Print(stderr.String())
+					// fmt.Print(stderr.String())
+					continue; // change this
 				}
 			    if redirect {
 					output := out.String()
