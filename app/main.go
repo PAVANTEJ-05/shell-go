@@ -80,7 +80,7 @@ func main() {
 			output :=strings.Join(args," ")+"\n"
 				if append_cmd {
 					content,_:=os.ReadFile(rd_arg)
-					output = string(content)+output+"\n"
+					output = string(content)+output
 					append_cmd = false
 				}
 			os.WriteFile(rd_arg,[]byte(output),0666)
