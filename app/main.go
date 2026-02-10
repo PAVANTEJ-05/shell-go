@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bufio"
+	// "bufio"
 	"fmt"
 	// "log"
 	"os"
@@ -10,6 +10,7 @@ import (
 	"slices"
 	"strings"
 	// "unicode"
+	"github.com/chzyer/readline"
 )
 
 // path for executables
@@ -35,21 +36,48 @@ func pathOf(cmd string) (string,bool){
 
 func main() {
 	
-	for{	
-	fmt.Print("$ ")
+	builtin_cmds := []string{"echo","type","exit","cd","pwd"} 
+	completer := readline.NewPrefixCompleter(
+			readline.PcItem("echo"),
+			readline.PcItem("exit")	,
+			readline.PcItem("type")	,
+			readline.PcItem("cd")	,
+			readline.PcItem("pwd")	,
+	)
+	config:= &readline.Config{
+		Prompt :"$ ",
+	  AutoComplete : completer,
+	InterruptPrompt: "^C",
+	
+	}
+	rl,err:= readline.NewEx(config)
+		if err!=nil{
+			fmt.Print(err)
+			return;
+		}
+		defer rl.Close()
 
-	x,e:= bufio.NewReader(os.Stdin).ReadString('\n')
+	for{	
+		
+	// fmt.Print("bash-$ ")
+		line,err := rl.Readline()
+		line=line+"\n"
+		if err!=nil{
+			fmt.Print(err)
+			return;
+		}
+	// x,e:= bufio.NewReader(os.Stdin).ReadString('\n')
 	// fmt.Printf("%q\n",x)    // raw input 
 
-	in:= parsed_args(x)[0]
-	args := parsed_args(x)[1:]
+	in:= parsed_args(line)[0]
+	args := parsed_args(line)[1:]
 	// fmt.Println(args)
 
 	// fmt.Printf("in: %q \n arg: %q\n",in,args) // for out of input and arguments
-	if e!= nil{
-		fmt.Print(e) 
-		os.Exit(1)
-	}
+	// if e!= nil{
+	// 	fmt.Print(e) 
+	// 	os.Exit(1)
+	// }
 		var rd_arg string ;
 		var redirect, append_cmd, rd_err  bool
 
@@ -73,7 +101,6 @@ func main() {
 		}
 		
 	}
-	builtin_cmds := []string{"echo","type","exit","cd","pwd"} 
 
 	switch in {
 	// ============ echo AND pwd COMMANDS CAN BE RUNNED BY LOCAL usr/bin OR /bin . SO NO NEED TO IMPLEMENT FROM SCRATCH .BUT IDK AND IMPLEMENTED IT, LATER REALIZED :(
