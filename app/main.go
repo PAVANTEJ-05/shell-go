@@ -33,10 +33,23 @@ func pathOf(cmd string) (string,bool){
 }
 
 
+type BellCompletion struct {
+	SubCompleter readline.AutoCompleter
+}
 
+func (b *BellCompletion) Do(line []rune, pos int) (newLine [][]rune, length int) {
+	newLine, length = b.SubCompleter.Do(line, pos)
+
+	if len(newLine) == 0 {
+		fmt.Print("\a") 
+	}
+
+	return newLine, length
+}
 func main() {
 	
 	builtin_cmds := []string{"echo","type","exit","cd","pwd"} 
+
 	completer := readline.NewPrefixCompleter(
 			readline.PcItem("echo"),
 			readline.PcItem("exit")	,
@@ -46,17 +59,17 @@ func main() {
 	)
 	config:= &readline.Config{
 		Prompt :"$ ",
-	  AutoComplete : completer,
-	InterruptPrompt: "^C",
-	
+		AutoComplete : &BellCompletion{SubCompleter:completer},
+		InterruptPrompt: "^C",
 	}
 	rl,err:= readline.NewEx(config)
 		if err!=nil{
 			fmt.Print(err)
 			return;
 		}
-		defer rl.Close()
-
+				
+	defer rl.Close()
+		
 	for{	
 		
 	// fmt.Print("bash-$ ")
