@@ -28,7 +28,6 @@ func parsed_args( raw string) []string{
 		sb.WriteRune(c)
 		continue;
 	
-
 	}else if (c=='\\'&& !t1 ){
 		toggle =!toggle
 		continue
